@@ -429,5 +429,5 @@ class MainApp(MDApp):
 		pic.save(filename)
 		print(f'=====================================generated==={filename}===succefully')
 		return filename
-	
-MainApp().run()	 
+if __name__ == '__main__':	
+	MainApp().run()	 
