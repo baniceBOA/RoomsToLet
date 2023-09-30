@@ -26,6 +26,7 @@ from threading import Thread
 from time import time
 from PIL import Image as PilImage
 from loaders import AKImageLoader
+from plyer import storagepath
 Window.size = (360, 640)
 kv = '''
 #:import Window kivy.core.window.Window
@@ -391,9 +392,10 @@ class MainApp(MDApp):
 		self.theme_cls.primary_palette = 'Teal'
 		return MainToLetApp()
 	def on_start(self):
-		self.images = [img for img in os.listdir('D:/files/images/') if img.endswith('.jpg')]
+		dirs = storagepath.get_pictures_dir()
+		self.images = [img for img in os.listdir(dirs) if img.endswith('.jpg')]
 		self.toletapp = self.root.ids.my_views.ids.refresh_layout
-		data = [{'image':f'D:/files/images/{img}', 'housetype':'bugalow'} for img in self.images]
+		data = [{'image':f'{dirs}{os.path.sep}{img}', 'housetype':'bugalow'} for img in self.images]
 		self.toletapp.data = data
 		
 	def refresh(self):
