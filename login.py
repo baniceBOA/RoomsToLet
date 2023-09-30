@@ -4,6 +4,7 @@ from create_account import ContentBottomSheet
 from kivy.factory import Factory
 from kivymd.uix.bottomsheet import MDCustomBottomSheet
 from kivy.properties import ObjectProperty
+from string import punctuation
 import requests
 kv = '''
 <Login>:

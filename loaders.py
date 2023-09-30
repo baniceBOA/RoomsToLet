@@ -150,36 +150,7 @@ class AKImageLoader(ThemableBehavior, AsyncImage):
         print(f'====================== the images {self.source} has loaded ====================')
        
         self._stop_animate()
-        self.adjust_size()
-    def adjust_size(self, *args):
-        if not self.parent or not self.texture:
-            return
+        
 
-        (par_x, par_y) = self.parent.size
-
-        if par_x == 0 or par_y == 0:
-            with self.canvas:
-                self.canvas.clear()
-            return
-
-        par_scale = par_x / par_y
-        (img_x, img_y) = self.texture.size
-        img_scale = img_x / img_y
-
-        if par_scale > img_scale:
-            (img_x_new, img_y_new) = (img_x, img_x / par_scale)
-        else:
-            (img_x_new, img_y_new) = (img_y * par_scale, img_y)
-
-        crop_pos_x = (img_x - img_x_new) / 2
-        crop_pos_y = (img_y - img_y_new) / 2
-
-        subtexture = self.texture.get_region(
-            crop_pos_x, crop_pos_y, img_x_new, img_y_new
-        )
-
-        with self.canvas:
-            self.canvas.clear()
-            Color(1, 1, 1)
-            Rectangle(texture=subtexture, pos=self.pos, size=(par_x, par_y))
+        
 

@@ -98,7 +98,7 @@ class HouseToLet(MDFloatLayout):
 				'rent':self.rent.text,
 				'gps':self.gps.text}
 		files = {'picture':open(self.picture.text, 'rb')}
-		resp = request.post(self.url, data=data, files=files)
+		resp = requests.post(self.url, data=data, files=files)
 		if resp.status_code == 200:
 			toast(text='updated succefully')
 		else:

@@ -9,9 +9,10 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFillRoundFlatButton
 from kivymd.uix.behaviors import RectangularElevationBehavior
 from kivymd.uix.toolbar import MDTopAppBar
-from kivymd.utils.fitimage import FitImage
+from kivymd.uix.fitimage import FitImage
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.list import OneLineIconListItem
+from kivymd.toast import toast
 from kivymd.uix.tab import MDTabsBase
 from kivy.clock import Clock, mainthread
 from kivy.lang import Builder
@@ -36,6 +37,7 @@ kv = '''
 #:import ViewCatalogue view_catalogue.ViewCatalogue
 #:import AccountManager account_manager.AccountManager
 #:import Map map.Map
+#:import ConnectionSetting connections.ConnectionSetting
 #:import CustomViewRefreshLayout customrefreshview.CustomViewRefreshLayout
 #:import MDRecycleBoxLayout customrefreshview.MDRecycleBoxLayout
 
@@ -142,16 +144,18 @@ kv = '''
 	md_bg_color:app.theme_cls.bg_darkest
 	Vertical:
 		Horizontal:
+			padding:[15,0, 15, 10]
 			size_hint_y:None
 			height:dp(50)
-			MDTextField:
-				hint_text:'Search'
-				size_hint_x:None
-				width:dp(260)
-
-			MDFillRoundFlatButton:
-				text:'Search'
-				on_release: root.update_searches()
+			MDRelativeLayout:
+				MDTextField:
+					mode:'round'
+					hint_text:'Search'
+					
+				MDIconButton:
+					icon:'globe-light-outline'
+					pos_hint:{'center_x':0.96, 'center_y':0.35}
+					on_release: root.update_searches()
 		CustomViewRefreshLayout:
 			id:refresh_layout
 			root_layout:root
@@ -247,6 +251,11 @@ kv = '''
 			MDScreen: 
 				name:'account_manager'
 				AccountManager:
+			MDScreen: 
+				name:'connections'
+				on_enter:connect.preinit()
+				ConnectionSetting:
+					id:connect
 
 		MDNavigationDrawer:
 			id:nav_drawer
@@ -291,6 +300,13 @@ kv = '''
 							on_press:
 								screen_manager.current = 'create_account'
 								nav_drawer.set_state('close')
+						OneListItem:
+							icon:'connection'
+							text:'Network'
+							on_press:
+								screen_manager.current = 'connections'
+								nav_drawer.set_state('close')
+
 						OneListItem:
 							icon:'file-document'
 							text:'Terms Of Service'
@@ -367,6 +383,7 @@ class MainToLetApp(MDFloatLayout):
 		self.screen_manager.current = touch.text
 		
 class MainApp(MDApp):
+	url = StringProperty('')
 	screen_manager = ObjectProperty()
 	def build(self):
 		self.images_list = []
@@ -399,7 +416,7 @@ class MainApp(MDApp):
 		#result = r.json()
 		url = 'http://127.0.0.1:5000/get_images'
 		self.images_list = []
-		UrlRequest(url, self.success_fetch)
+		UrlRequest(url, on_success=self.success_fetch, on_error=self.error_fetch, on_failure=self.failure_fetch)
 		#self.root.ids.my_views.ids.refresh_layout.data = []
 		self.root.ids.my_views.ids.refresh_layout.viewclass = 'ViewHouse'
 		#self.root.ids.my_views.ids.refresh_layout.data = [{'image':i, 'housetype':'bugalow'} for i in self.images_list]
@@ -416,7 +433,14 @@ class MainApp(MDApp):
 		self.root.ids.my_views.ids.refresh_layout.viewclass = 'ViewHouse'
 		self.root.ids.my_views.ids.refresh_layout.data = [{'image':i, 'housetype':'bugalow'} for i in self.images_list]
 		self.root.ids.my_views.ids.refresh_layout.refresh_done()
-    
+	def error_fetch(self, reg, result):
+		self.root.ids.my_views.ids.refresh_layout.refresh_done()
+		toast('An error occured while processing yout request')
+
+	def failure_fetch(self, reg, result):
+		print('Failure')
+		self.root.ids.my_views.ids.refresh_layout.refresh_done() 
+		toast('Connection error: \n Check connection and try again')   
 	def on_stop(self):
 		''' perform some cleaning before the application close and return back the resource consumed'''
 		for file in self.images_list:
