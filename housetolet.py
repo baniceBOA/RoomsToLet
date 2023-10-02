@@ -2,7 +2,7 @@ from kivymd.uix.floatlayout  import MDFloatLayout
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivymd.toast import toast
-
+from kivy.app import App
 from plyer import filechooser
 
 import requests
@@ -75,17 +75,17 @@ class HouseToLet(MDFloatLayout):
 	housetype= ObjectProperty()
 	name = ObjectProperty()
 	rooms = ObjectProperty()
-	floorspace=ObjectProperty() # floorspace in meters squared.
+	floorspace = ObjectProperty() # floorspace in meters squared.
 	region = ObjectProperty()
 	location_description = ObjectProperty()
-	rent=ObjectProperty()
-	water=ObjectProperty()
+	rent = ObjectProperty()
+	water = ObjectProperty()
 	gps = ObjectProperty()
 	picture = ObjectProperty()
 
 	def update_data(self):
 		''' get the detials of the location under the current details '''
-		self.url = ''
+		self.url = App.get_running_app().url
 		#we are querying the data base
 		data = {'housetype':self.housetype.text,
 				'location_description':self.location_description.text,

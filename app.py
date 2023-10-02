@@ -10,6 +10,7 @@ from kivymd.uix.button import MDFillRoundFlatButton
 from kivymd.uix.behaviors import RectangularElevationBehavior
 from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.fitimage import FitImage
+from kivymd.uix.imagelist import MDSmartTile
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.list import OneLineIconListItem
 from kivymd.toast import toast
@@ -41,6 +42,7 @@ kv = '''
 #:import ConnectionSetting connections.ConnectionSetting
 #:import CustomViewRefreshLayout customrefreshview.CustomViewRefreshLayout
 #:import MDRecycleBoxLayout customrefreshview.MDRecycleBoxLayout
+#:import MDRecycleGridLayout customrefreshview.MDRecycleGridLayout
 
 
 <Vertical@MDBoxLayout>:
@@ -77,37 +79,23 @@ kv = '''
 <ViewHouseImage>:
 
 <ViewHouse>:
-	orientation:'vertical'
-	size_hint_y:None
-	height:dp(300)
-	padding:dp(10)
-	pos_hint:{'center_x':0.5}
-	md_bg_color:app.theme_cls.bg_darkest
-	ViewHouseImage:
-		source:root.image
-		size_hint_x:None
-		width:dp(340)
-		size_hint_y:None
-		height:dp(250)
-	MDBoxLayout:
-	    orientation:'vertical'
-		size_hint_y:None
-		height:dp(50)
-		md_bg_color:app.theme_cls.bg_light
-		size_hint_x:None
-		width:dp(340)
-		MDLabel:
-		    font_size:dp(18)
-			text:root.housetype
-		MDLabel:
-		    font_size:dp(12)
-			text:root.rent
-		MDLabel:
-		    font_size:dp(12)
-			text:root.region
-		MDLabel:
-		    font_size:dp(12)
-			text:root.location_description
+	radius: 24
+	box_radius: [0, 0, 24, 24]
+	lines: 2
+	source: root.image
+	pos_hint: {"center_x": .5, "center_y": .5}
+	size_hint: None, None
+	size: "320dp", "320dp"
+	MDIconButton:
+		icon: "heart-outline"
+		theme_icon_color: "Custom"
+		icon_color: 1, 0, 0, 1
+		pos_hint: {"center_y": .5}
+		on_release: self.icon = "heart" if self.icon == "heart-outline" else "heart-outline"
+	TwoLineListItem:
+		text: f"[color=#ffffff][b]{root.housetype}[/b][/color]"
+		secondary_text: f"[color=#808080][b]{root.region}[/b][/color]"
+		pos_hint: {"center_y": .5}
 
 <ViewRooms>:
 	view:view
@@ -162,11 +150,12 @@ kv = '''
 			root_layout:root
 			refresh_callback:app.refresh
 			viewclass:'ViewHouse'
-			MDRecycleBoxLayout:
-			    orientation:'vertical'
+			MDRecycleGridLayout:
 			    default_size: None, dp(325)
                 default_size_hint: 1, None
 			    adaptive_height:True
+			    cols:2
+			    spacing:"5sp"
 			    
 					
 
@@ -281,6 +270,12 @@ kv = '''
 					Vertical:
 						adaptive_height:True
 						OneListItem:
+							icon:'home'
+							text:'Home'
+							on_press:
+								screen_manager.current = 'ToLetApp'
+								nav_drawer.set_state('close')
+						OneListItem:
 							text:'Login'
 							icon:'account'
 							on_press:
@@ -342,7 +337,7 @@ class Tab(MDBoxLayout, MDTabsBase):
 class ViewHouseImage(ButtonBehavior, AKImageLoader):
 	pass
 		
-class ViewHouse(RectangularElevationBehavior, MDBoxLayout):
+class ViewHouse(MDSmartTile):
 	image = StringProperty()
 	housetype = StringProperty()
 	region = StringProperty()
@@ -366,10 +361,11 @@ class LandLord(MDFloatLayout):
 
 class ToLetApp(MDFloatLayout):
 	def update_searches(self):
+		st = storagepath.get_pictures_dir()
 		if self.ids.refresh_layout.data:
 			self.ids.refresh_layout.data = []
 			self.ids.refresh_layout.viewclass = 'ViewRooms'
-		self.ids.refresh_layout.data = [{'source':r'D:/files/images/IMG-20220313-WA0011.jpg'} for i in range(100)]
+		self.ids.refresh_layout.data = [{'source':os.path.join(st, i)} for i in os.listdir(st)]
 
 
 	
@@ -403,20 +399,11 @@ class MainApp(MDApp):
 
 	def refresh_callback(self, interval):
 		print('refreshing')
-		'''
-		import random
-		img = random.choice(self.images)
-		print(self.root.ids.my_views.ids.refresh_layout.viewclass)
-		self.root.ids.my_views.ids.refresh_layout.data = []
-		self.root.ids.my_views.ids.refresh_layout.viewclass = 'ViewHouse'
-		self.root.ids.my_views.ids.refresh_layout.data = [{'image':f"D:/files/images/{img}", 'housetype':'bugalow'} for i in range(30)]
-		
-        '''
 		
 		
 		#r = requests.get('http://127.0.0.1:5000/get_images')
 		#result = r.json()
-		url = 'http://127.0.0.1:5000/get_images'
+		url = self.url + '/get_images'
 		self.images_list = []
 		UrlRequest(url, on_success=self.success_fetch, on_error=self.error_fetch, on_failure=self.failure_fetch)
 		#self.root.ids.my_views.ids.refresh_layout.data = []
@@ -429,7 +416,7 @@ class MainApp(MDApp):
 		print(result.keys())
 		
 		for img in result['images']:
-			self.images_list.append(f'http://localhost:5000/get_file/{img}')
+			self.images_list.append(f'{self.url}/get_file/{img}')
 			
 		self.root.ids.my_views.ids.refresh_layout.data = []
 		self.root.ids.my_views.ids.refresh_layout.viewclass = 'ViewHouse'
@@ -437,6 +424,7 @@ class MainApp(MDApp):
 		self.root.ids.my_views.ids.refresh_layout.refresh_done()
 	def error_fetch(self, reg, result):
 		self.root.ids.my_views.ids.refresh_layout.refresh_done()
+		print(result)
 		toast('An error occured while processing yout request')
 
 	def failure_fetch(self, reg, result):
@@ -450,7 +438,7 @@ class MainApp(MDApp):
 
 	def generate_image(self, file):
 		filename = f'image-{int(time())}.png'
-		r = requests.get(f'http://localhost:5000/get_file/{file}')
+		r = requests.get(f'{self.url}/get_file/{file}')
 		pic = PilImage.open(BytesIO(r.content))
 		pic.save(filename)
 		print(f'=====================================generated==={filename}===succefully')

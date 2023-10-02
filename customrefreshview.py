@@ -5,6 +5,7 @@ from kivymd.uix.refreshlayout import MDScrollViewRefreshLayout
 from kivymd.uix import MDAdaptiveWidget
 from kivymd.uix.behaviors import DeclarativeBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recyclegridlayout import RecycleGridLayout
 from kivy.properties import AliasProperty
 from kivy.lang import Builder
 
@@ -113,7 +114,8 @@ class CustomViewRefreshLayout(RecycleViewBehavior, MDScrollViewRefreshLayout):
     
 class MDRecycleBoxLayout(DeclarativeBehavior, RecycleBoxLayout, MDAdaptiveWidget):
     pass
-
+class MDRecycleGridLayout(DeclarativeBehavior, RecycleGridLayout, MDAdaptiveWidget):
+    pass
 class TestApp(MDApp):
     def build(self):
         return CustomViewRefreshLayout()
