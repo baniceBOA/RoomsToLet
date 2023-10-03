@@ -20,6 +20,7 @@ from kivy.lang import Builder
 from random import random 
 from string import ascii_lowercase, ascii_uppercase, digits, punctuation
 from kivy.network.urlrequest import UrlRequest
+from kivy.utils import platform
 import os
 import requests
 from io import BytesIO
@@ -388,6 +389,9 @@ class MainApp(MDApp):
 		self.theme_cls.primary_palette = 'Teal'
 		return MainToLetApp()
 	def on_start(self):
+		if platform == 'android':
+			from android.permissions import request_permissions, Permission
+			request_permissions([Permission.WRITE_EXTERNAL_STORAGE])
 		dirs = storagepath.get_pictures_dir()
 		self.images = [img for img in os.listdir(dirs) if img.endswith('.jpg')]
 		self.toletapp = self.root.ids.my_views.ids.refresh_layout
