@@ -13,7 +13,7 @@ kv = '''
 	username:username
 	ClickableImage:
 		source:'D:/files/images/IMG-20220313-WA0011.jpg'
-		radius:70,70,70,70
+		radius:self.width/2
 		size_hint_x:None
 		width: Window.size[0]*0.40
 		size_hint_y:None

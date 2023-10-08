@@ -1,13 +1,16 @@
-from kivymd.uix.floatlayout  import MDFloatLayout
+from kivymd.uix.boxlayout  import MDBoxLayout
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, ListProperty
+from kivymd.uix.button import MDRaisedButton
 from kivymd.toast import toast
+
 from kivy.app import App
 from plyer import filechooser
 
 import requests
 kv = '''
 <HouseToLet>:
+	padding:'25dp'
 	housetype:housetype
 	name:name
 	region:region
@@ -71,7 +74,7 @@ kv = '''
 Builder.load_string(kv)
 
 
-class HouseToLet(MDFloatLayout):
+class HouseToLet(MDBoxLayout):
 	housetype= ObjectProperty()
 	name = ObjectProperty()
 	rooms = ObjectProperty()
@@ -82,6 +85,7 @@ class HouseToLet(MDFloatLayout):
 	water = ObjectProperty()
 	gps = ObjectProperty()
 	picture = ObjectProperty()
+	image_files = ListProperty()
 
 	def update_data(self):
 		''' get the detials of the location under the current details '''
@@ -104,10 +108,13 @@ class HouseToLet(MDFloatLayout):
 		else:
 			toast(text='An error occured')
 	def get_picture(self, *args):
-		''' Lock for image in the device filesystem '''
+		''' Look for image in the device filesystem '''
+		
 		filechooser.open_file(on_selection=self.selection)
 
 	def selection(self, filename):
+		for files in filename:
+			self.image_files.append(files)
 		self.picture.text = str(filename)
-
-			
+	
+		

@@ -29,7 +29,15 @@ from time import time
 from PIL import Image as PilImage
 from loaders import AKImageLoader
 from plyer import storagepath
-Window.size = (360, 640)
+from PIL import ImageGrab
+
+resolution = ImageGrab.grab().size
+if platform != 'android':
+	Window.size = (400, resolution[1]-20)
+if platform == 'android':
+	from android.permissions import request_permissions, Permission
+	request_permissions([Permission.WRITE_EXTERNAL_STORAGE,Permission.READ_EXTERNAL_STORAGE, Permission.ACCESS_NOTIFICATION_POLICY,Permission.LOCATION_HARDWARE])
+
 kv = '''
 #:import Window kivy.core.window.Window
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
@@ -140,10 +148,10 @@ kv = '''
 			MDRelativeLayout:
 				MDTextField:
 					mode:'round'
-					hint_text:'Search'
+					hint_text:'search'
 					
 				MDIconButton:
-					icon:'globe-light-outline'
+					icon:'magnify'
 					pos_hint:{'center_x':0.96, 'center_y':0.35}
 					on_release: root.update_searches()
 		CustomViewRefreshLayout:
@@ -389,9 +397,11 @@ class MainApp(MDApp):
 		self.theme_cls.primary_palette = 'Teal'
 		return MainToLetApp()
 	def on_start(self):
-		if platform == 'android':
-			from android.permissions import request_permissions, Permission
-			request_permissions([Permission.WRITE_EXTERNAL_STORAGE])
+		def callback(permission, result):
+			if all([res in result]):
+				toast('Permission allowed succesfully')
+			else:
+				toast('could not get permission\n try to enable manually')
 		dirs = storagepath.get_pictures_dir()
 		self.images = [img for img in os.listdir(dirs) if img.endswith('.jpg')]
 		self.toletapp = self.root.ids.my_views.ids.refresh_layout
