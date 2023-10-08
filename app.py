@@ -31,9 +31,6 @@ from loaders import AKImageLoader
 from plyer import storagepath
 from PIL import ImageGrab
 
-resolution = ImageGrab.grab().size
-if platform != 'android':
-	Window.size = (400, resolution[1]-20)
 
 kv = '''
 #:import Window kivy.core.window.Window
