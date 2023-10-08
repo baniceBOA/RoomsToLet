@@ -12,7 +12,7 @@ kv = '''
 	password:password
 	username:username
 	ClickableImage:
-		source:'D:/files/images/IMG-20220313-WA0011.jpg'
+		source:'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format'
 		radius:self.width/2
 		size_hint_x:None
 		width: Window.size[0]*0.40

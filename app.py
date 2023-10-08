@@ -34,9 +34,6 @@ from PIL import ImageGrab
 resolution = ImageGrab.grab().size
 if platform != 'android':
 	Window.size = (400, resolution[1]-20)
-if platform == 'android':
-	from android.permissions import request_permissions, Permission
-	request_permissions([Permission.WRITE_EXTERNAL_STORAGE,Permission.READ_EXTERNAL_STORAGE, Permission.ACCESS_NOTIFICATION_POLICY,Permission.LOCATION_HARDWARE])
 
 kv = '''
 #:import Window kivy.core.window.Window
@@ -207,7 +204,7 @@ kv = '''
                 halign: 'center'
     
 	Avatar:
-		source:'D:/files/images/IMG-20220313-WA0011.jpg'
+		source:'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format'
 		pos_hint:{'top':0.97, 'center_x':0.9}
 		size_hint_x:None
 		width:Window.size[0]*0.100
@@ -403,9 +400,13 @@ class MainApp(MDApp):
 			else:
 				toast('could not get permission\n try to enable manually')
 		dirs = storagepath.get_pictures_dir()
-		self.images = [img for img in os.listdir(dirs) if img.endswith('.jpg')]
+		self.images = ['https://i.guim.co.uk/img/media/7d04c4cb7510a4bd9a8bec449f53425aeccee895/298_266_1150_690/master/1150.jpg?width=1200&quality=85&auto=format&fit=max&s=4ae508ecb99c15ec04610b617efb3fa7',
+						'https://cdn.jdpower.com/Average%20Weight%20Of%20A%20Car.jpg',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRln-3kdi7WJ5fhB7DSmh_T_k_B5PbqJwVr6g&usqp=CAU',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE8DCWwBTi6XeNFXyCCoUAsrOerJILSZ0xSh57_FAxMw45P3VM_XhCDEJp1NevEd76V9Q&usqp=CAU',
+						'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format']
 		self.toletapp = self.root.ids.my_views.ids.refresh_layout
-		data = [{'image':f'{dirs}{os.path.sep}{img}', 'housetype':'bugalow'} for img in self.images]
+		data = [{'image':f'{img}', 'housetype':'bugalow'} for img in self.images]
 		self.toletapp.data = data
 		
 	def refresh(self):
