@@ -30,7 +30,8 @@ from PIL import Image as PilImage
 from loaders import AKImageLoader
 from plyer import storagepath
 from PIL import ImageGrab
-Window.size = (400, 800)
+if platform != 'android':
+	Window.size = (400, 800)
 
 kv = '''
 #:import Window kivy.core.window.Window
@@ -132,8 +133,7 @@ kv = '''
 			 
 <ToLetApp>:
 	pos_hint:{'top':0.9}
-	size_hint_y:None
-	height:Window.size[1]*0.9
+	
 	md_bg_color:app.theme_cls.bg_darkest
 	Vertical:
 		Horizontal:
@@ -205,8 +205,16 @@ kv = '''
 			transition:FadeTransition(duration=0.00001, clearcolor=app.theme_cls.bg_dark)
 			MDScreen:
 				name:'ToLetApp'
-				ToLetApp:
-					id:my_views
+				MDHeroFrom:
+					id:hero
+					tag:'toletapp'
+					size_hint_y:None
+					height:Window.size[1]*0.9
+					ToLetApp:
+						id:my_views
+						size_hint:None, None
+						size:hero.size
+
 			MDScreen:
 				name:'HouseToLet'
 				HouseToLet:
@@ -215,8 +223,15 @@ kv = '''
 				RoomsToLet:
 			MDScreen:
 				name:'view_rooms'
+				heroes_to:[hero_to]
+				MDHeroTo:
+					id:hero_to
+					size_hint_y:None
+					height:Window.size[1]*0.9
 				ViewCatalogue:
 					id:view_catalogue
+					size_hint:None, None
+					size:hero_to.size
 			MDScreen:
 				id:map
 				name:'map'
@@ -393,7 +408,7 @@ class MainApp(MDApp):
 		return MainToLetApp()
 	def on_start(self):
 		def callback(permission, result):
-			if all([res in result]):
+			if all([res for res in result]):
 				toast('Permission allowed succesfully')
 			else:
 				toast('could not get permission\n try to enable manually')
@@ -415,7 +430,8 @@ class MainApp(MDApp):
 		self.toletapp.data = data
 	def change_screen(self, instance):
 		self.root.ids.view_catalogue.carousel.clear_widgets()
-		self.root.ids.view_catalogue.carousel.add_widget(MDSmartTile(source=instance, size_hint_y=None, height='200dp'))
+		self.root.ids.view_catalogue.carousel.add_widget(MDSmartTile(source=instance, size_hint_y=None, radius=['12dp','12dp','12dp','12dp'], height='200dp'))
+		self.root.screen_manager.current_heroes = ['hero']
 		self.root.screen_manager.current = 'view_rooms'
 
 	def refresh(self):

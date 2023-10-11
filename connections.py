@@ -48,7 +48,7 @@ Builder.load_string(kv)
 
 class ConnectionSetting(MDFloatLayout):
     host = StringProperty('localhost')
-    port = NumericProperty(5555)
+    port = NumericProperty(5000)
 
     def on_connect(self):
         if self.ids.host_id.text and self.ids.port_id.text:

@@ -8,6 +8,7 @@ kv = '''
 	pos_hint:{'top':0.9}
 	size_hint_y:None
 	height:Window.size[1]*0.9
+	
 	carousel:carousel
 	residents_name:residents_name
 	area:area
@@ -19,6 +20,7 @@ kv = '''
 	roads:roads
 	security:security
 	Vertical:
+		padding:[dp(10), 0, dp(10), 0]
 		MDCarousel:
 			id:carousel
 			size_hint_y:None
@@ -42,6 +44,7 @@ kv = '''
 		MDScrollViewRefreshLayout:
 			root_layout:root
 			Vertical:
+				padding:[dp(10), 0, dp(10), 0]
 				adaptive_height:True
 				
 				MDLabel:
