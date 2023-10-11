@@ -30,7 +30,7 @@ from PIL import Image as PilImage
 from loaders import AKImageLoader
 from plyer import storagepath
 from PIL import ImageGrab
-
+Window.size = (400, 800)
 
 kv = '''
 #:import Window kivy.core.window.Window
@@ -46,6 +46,7 @@ kv = '''
 #:import CustomViewRefreshLayout customrefreshview.CustomViewRefreshLayout
 #:import MDRecycleBoxLayout customrefreshview.MDRecycleBoxLayout
 #:import MDRecycleGridLayout customrefreshview.MDRecycleGridLayout
+#:import SearchView searchview.SearchView
 
 
 <Vertical@MDBoxLayout>:
@@ -136,29 +137,44 @@ kv = '''
 	md_bg_color:app.theme_cls.bg_darkest
 	Vertical:
 		Horizontal:
-			padding:[15,0, 15, 10]
 			size_hint_y:None
 			height:dp(50)
 			MDRelativeLayout:
 				MDTextField:
+					id:search_input
 					mode:'round'
 					hint_text:'search'
-					
+					size_hint_x:None
+					width:Window.size[0]*0.7
+					pos_hint:{'center_x':0.5, 'center_y':0.5}
+				MDIconButton:
+					icon:''
+					id:toletapp_return_btn
+					pos_hint:{'center_x':0.08, 'center_y':0.5}
+					on_release:root.return_home_screen()
 				MDIconButton:
 					icon:'magnify'
-					pos_hint:{'center_x':0.96, 'center_y':0.35}
-					on_release: root.update_searches()
-		CustomViewRefreshLayout:
-			id:refresh_layout
-			root_layout:root
-			refresh_callback:app.refresh
-			viewclass:'ViewHouse'
-			MDRecycleGridLayout:
-			    default_size: None, dp(325)
-                default_size_hint: 1, None
-			    adaptive_height:True
-			    cols:2
-			    spacing:"5sp"
+					pos_hint:{'center_x':0.9, 'center_y':0.5}
+					on_release:root.update_searches()
+		MDScreenManager:
+			id:toletapp_sm
+			MDScreen:
+				name:'toletapp_screen_home'
+				CustomViewRefreshLayout:
+					id:refresh_layout
+					root_layout:root
+					refresh_callback:app.refresh
+					viewclass:'ViewHouse'
+					MDRecycleGridLayout:
+						default_size: None, dp(325)
+						default_size_hint: 1, None
+						adaptive_height:True
+						cols:2
+						spacing:"5sp"
+			MDScreen:
+				name:'toletapp_screen_search_view'
+				SearchView:
+					id:search_view
 			    
 					
 
@@ -171,34 +187,6 @@ kv = '''
 		title: "SpaceToLet"
 		left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
 	
-	MDBottomNavigation:
-		pos_hint:{'top':0.12}
-		MDBottomNavigationItem:
-            name: 'screen 1'
-            text: 'Python'
-            icon: 'language-python'
-
-            MDLabel:
-                text: 'Python'
-                halign: 'center'
-
-        MDBottomNavigationItem:
-            name: 'screen 2'
-            text: 'C++'
-            icon: 'language-cpp'
-
-            MDLabel:
-                text: 'I programming of C++'
-                halign: 'center'
-
-        MDBottomNavigationItem:
-            name: 'screen 3'
-            text: 'JS'
-            icon: 'language-javascript'
-
-            MDLabel:
-                text: 'JS'
-                halign: 'center'
     
 	Avatar:
 		source:'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format'
@@ -228,6 +216,7 @@ kv = '''
 			MDScreen:
 				name:'view_rooms'
 				ViewCatalogue:
+					id:view_catalogue
 			MDScreen:
 				id:map
 				name:'map'
@@ -263,7 +252,7 @@ kv = '''
 					    width:nav_drawer.width-dp(15)
 					    size_hint_y:None
 					    height:nav_drawer.height*0.25
-					    source:'D:/files/images/IMG-20220313-WA0011.jpg'
+					    source:'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format'
 				    MDLabel:
 			            text:app.title
 					    font_size:dp(20)
@@ -346,6 +335,8 @@ class ViewHouse(MDSmartTile):
 	region = StringProperty()
 	rent = StringProperty()
 	location_description = StringProperty()
+
+
 class ViewRooms(MDBoxLayout):
 	views = ObjectProperty()
 	source = StringProperty()
@@ -363,13 +354,23 @@ class LandLord(MDFloatLayout):
 
 
 class ToLetApp(MDFloatLayout):
-	def update_searches(self):
-		st = storagepath.get_pictures_dir()
-		if self.ids.refresh_layout.data:
-			self.ids.refresh_layout.data = []
-			self.ids.refresh_layout.viewclass = 'ViewRooms'
-		self.ids.refresh_layout.data = [{'source':os.path.join(st, i)} for i in os.listdir(st)]
 
+	def return_home_screen(self):
+		self.ids.toletapp_sm.current = 'toletapp_screen_home'
+		self.ids.toletapp_return_btn.icon = ''
+
+	def update_searches(self):
+		#toggle the screens 
+		self.ids.toletapp_sm.current = 'toletapp_screen_search_view'
+		self.ids.toletapp_return_btn.icon = 'arrow-left'
+		if self.ids.search_input.text:
+			self.ids.search_view.search(self.ids.search_input.text)
+			self.ids.search_input.text = ''
+			self.ids.search_input.hint_text='search'
+	
+
+
+		
 
 	
 		
@@ -398,14 +399,25 @@ class MainApp(MDApp):
 				toast('could not get permission\n try to enable manually')
 		dirs = storagepath.get_pictures_dir()
 		self.images = ['https://i.guim.co.uk/img/media/7d04c4cb7510a4bd9a8bec449f53425aeccee895/298_266_1150_690/master/1150.jpg?width=1200&quality=85&auto=format&fit=max&s=4ae508ecb99c15ec04610b617efb3fa7',
-						'https://cdn.jdpower.com/Average%20Weight%20Of%20A%20Car.jpg',
+						'https://images7.alphacoders.com/345/thumbbig-345553.webp',
 						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRln-3kdi7WJ5fhB7DSmh_T_k_B5PbqJwVr6g&usqp=CAU',
+						'https://upload.wikimedia.org/wikipedia/commons/6/6c/Priyanka-chopra-gesf-2018-7565.jpg',
+						'https://images2.alphacoders.com/489/thumbbig-489212.webp',
+						'https://i.redd.it/hje1fqzt8yi41.jpg',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcbVuoDjA_X1W2ONHZ1_rKjGC0-2FuuoiTTQ&usqp=CAU',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCmpWfyLnOW5BjPvWhJRbZyzM2tmTp0BGIEA&usqp=CAU'
+						'https://www.instyle.com/thmb/yi4IXmywb9bqQ5t8PwW935X14_c=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Priyanka-Chopra-Lead-51411e8b9ded419b8839afe25f36db72.jpg',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Px4EIVER-q5mdTMHzBUeebeSeNgIXDN855peEfZ2BBtknPFidpzV4N7xzUHMZF-yis8&usqp=CAU'
 						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE8DCWwBTi6XeNFXyCCoUAsrOerJILSZ0xSh57_FAxMw45P3VM_XhCDEJp1NevEd76V9Q&usqp=CAU',
 						'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format']
 		self.toletapp = self.root.ids.my_views.ids.refresh_layout
-		data = [{'image':f'{img}', 'housetype':'bugalow'} for img in self.images]
+		data = [{'image':f'{img}', 'housetype':'bugalow','on_release':lambda x=f'{img}': self.change_screen(x)} for img in self.images]
 		self.toletapp.data = data
-		
+	def change_screen(self, instance):
+		self.root.ids.view_catalogue.carousel.clear_widgets()
+		self.root.ids.view_catalogue.carousel.add_widget(MDSmartTile(source=instance, size_hint_y=None, height='200dp'))
+		self.root.screen_manager.current = 'view_rooms'
+
 	def refresh(self):
 		Clock.schedule_once(self.refresh_callback, 1)
 
@@ -432,7 +444,7 @@ class MainApp(MDApp):
 			
 		self.root.ids.my_views.ids.refresh_layout.data = []
 		self.root.ids.my_views.ids.refresh_layout.viewclass = 'ViewHouse'
-		self.root.ids.my_views.ids.refresh_layout.data = [{'image':i, 'housetype':'bugalow'} for i in self.images_list]
+		self.root.ids.my_views.ids.refresh_layout.data = [{'image':i, 'housetype':'bugalow', 'on_release':lambda x=f'{i}': self.change_screen(x)} for i in self.images_list]
 		self.root.ids.my_views.ids.refresh_layout.refresh_done()
 	def error_fetch(self, reg, result):
 		self.root.ids.my_views.ids.refresh_layout.refresh_done()

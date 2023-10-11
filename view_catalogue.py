@@ -5,6 +5,9 @@ from kivy.properties import ObjectProperty
 
 kv = '''
 <ViewCatalogue>:
+	pos_hint:{'top':0.9}
+	size_hint_y:None
+	height:Window.size[1]*0.9
 	carousel:carousel
 	residents_name:residents_name
 	area:area

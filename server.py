@@ -7,6 +7,7 @@ import io
 import os
 from db import Account, House, Room
 from random import random
+from utils import searchController
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///roomstolet.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -147,6 +148,17 @@ def upload():
 @app.route('/files')
 def file():
 	return redirect(url_for('uploads', filename='tehran.mp4'))
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+	if request.method == 'POST' or request.method == 'GET':
+		query = request.form['searchQuery']
+		searchcontroller = searchController(query=query)
+		return jsonify(searchcontroller)
+	return 404
+
+
+
 
 @app.route('/uploads/<filename>')
 def uploads(filename=''):

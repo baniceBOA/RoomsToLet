@@ -26,6 +26,10 @@ class LandLord(Base):
 	address =  Column(String)
 	location = Column(String)
 
+	def serialize(self):
+		data = dict(id=self.id, names=self.name, phone_no=self.phone_no, address=self.address, location=self.location)
+		return data
+
 
 class House(Base):
 	'''the housetype'''
@@ -42,6 +46,10 @@ class House(Base):
 	rent=Column(Integer)
 	water=Column(Boolean)
 	pictures = Column(String)
+	@property
+	def serialize(self):
+		data = dict(id=self.id, housetype=self.housetype, floorspace=self.floorspace, name=self.name, rooms=self.rooms, region=self.region, loaction=self.location, rent=self.rent, water=self.water, pictures=self.pictures )
+		return data
 
 class Room(Base):
 	__tablename__ = 'room'
@@ -55,6 +63,11 @@ class Room(Base):
 	location = Column(String)
 	description = Column(String)
 
+	@property
+	def serialize(self):
+		data = {'id': self.id, 'hotelname':self.hotelname, 'region':self.region, 'roomtype':self.roomtype, 'picture':self.picture, 'gps':self.gps, 'amount':self.amount, 'location':self.location, 'description':self.description}
+		return data
+
 class Account(Base):
 	__tablename__ = 'account'
 	id = Column(Integer, primary_key=True)
@@ -64,7 +77,11 @@ class Account(Base):
 	username = Column(String)
 	password = Column(String)
 	avatar = Column(String)
-	
+
+	@property
+	def serialize(self):
+		data = dict(id=self.id, firstname=self.firstname, secondname=self.secondname, email=self.email, username=self.username, avatar=self.avatar)
+		return data
 
 Base.metadata.create_all(engine)
 
