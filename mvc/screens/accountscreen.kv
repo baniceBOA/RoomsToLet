@@ -1,0 +1,35 @@
+<AccountScreen>:
+    MDBoxLayout:
+        md_bg_color:app.theme_cls.bg_darkest
+        orientation:'vertical'
+        MDTopAppBar:
+            title:'Account'
+            left_action_items:[['chevron-left', lambda x:root.chevron_back(x)]]
+            md_bg_color:'green'
+
+        ThreeLineAvatarIconListItem:
+            pos_hint:{'top':0.9}
+            text:root.username
+            secondary_text:root.region
+            tertiary_text:root.like
+            ImageLeftWidget:
+                source:root.source
+                radius:self.width/2
+                
+        MDBoxLayout:
+            pos_hint:{'top':0.8}
+            MDTabs:
+                tab_hint_x:True
+                allow_stretch:True
+                AccountTab:
+                    id:images
+                    icon:'image'
+                AccountTab:
+                    id:video
+                    icon:'video'
+
+
+
+
+        
+        

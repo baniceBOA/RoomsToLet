@@ -1,0 +1,22 @@
+<SpaceToLetApp>:
+    screen_manager:screen_manager
+    MDBottomAppBar:
+        MDTopAppBar:
+            icon:'home'
+            mode:'center'
+            type:'bottom'
+            left_action_items:[['account', lambda x: root.callback(x)], ['magnify', lambda x: root.callback(x)], ['pencil', lambda x: root.callback(x)],]
+            right_action_items:[['cog', lambda x:root.callback(x)], ['image', lambda x: root.callback(x)] ]
+            on_action_button:root.action_callback(self)
+
+    MDScreenManager:
+        id:screen_manager
+        HomeScreen:
+            name:'home'
+            on_enter: lambda x: self.load_data()
+        SearchView:
+            name:'search'
+        AccountScreen:
+            name:'account'
+        SettingScreen:
+            name:'settings'

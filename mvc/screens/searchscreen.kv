@@ -1,0 +1,46 @@
+#:import Window kivy.core.window.Window
+<SearchView>:
+    search_field:search_field
+    size_hint_y:None
+    height:'600dp'
+    pos_hint:{'top':1}
+    MDBoxLayout:
+        orientation:'vertical'
+        MDRelativeLayout:
+            size_hint_y:None
+            height:dp(50)
+            MDIconButton:
+                icon:'arrow-left'
+                pos_hint:{'center_x':0.08, 'center_y':0.5}
+                on_release:root.chevron_back()
+            MDTextField:
+                id:search_field
+                mode:'round'
+                hint_text:'Search'
+                pos_hint:{'center_x':0.5, 'center_y':0.5}
+                size_hint_x:None
+                width:dp(300)
+            MDIconButton:
+                icon:'magnify'
+                pos_hint:{'center_x':0.9, 'center_y':0.5}
+                on_release:root.search(search_field.text)
+
+        MDTabs:
+            SearchTab:
+                title:'Account'
+                id:account
+                refresh:root.search_refresh_callback
+            SearchTab:
+                title:'House'
+                id:house
+                refresh:root.search_refresh_callback
+            SearchTab:
+                title:'LandLord'
+                id:landlord
+                refresh:root.search_refresh_callback
+            SearchTab:
+                title:'Rooms'
+                id:room
+                refresh:root.search_refresh_callback
+
+         

@@ -187,7 +187,6 @@ def images_path():
 	path = 'D:/GDWhatsApp/Media/GBWhatsApp Images'
 	img = os.listdir(path)
 	imgs = [i for i in img if i.endswith('.jpg') or i.endswith('.png')]
-	print(imgs)
 	return imgs
 
 

@@ -1,0 +1,13 @@
+<SearchTab>:
+    CustomViewRefreshLayout:
+        id:search_refresh_layout
+        root_layout:root
+        refresh_callback:root.refresh
+        viewclass:'SearchItem'
+        MDRecycleBoxLayout:
+            orientation:'vertical'
+            default_size: None, dp(72)
+            default_size_hint: 1, None
+            adaptive_height:True
+            cols:2
+            spacing:"5sp"

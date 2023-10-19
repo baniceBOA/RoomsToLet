@@ -1,0 +1,18 @@
+<HomeScreen>:
+    refresh_layout:refresh_layout
+    MDBoxLayout:
+        size_hint_y:0.9
+        pos_hint:{'top':1}
+        CustomViewRefreshLayout:
+            id:refresh_layout
+            root_layout:root
+            refresh_callback:root.refresh
+            data:root.data
+            viewclass:'House'
+            MDRecycleBoxLayout:
+                orientation:'vertical'
+                default_size_hint:(1, None)
+                default_size:(None, dp(400))
+                adaptive_height:True
+
+            

@@ -1,0 +1,32 @@
+<House>:
+    orientation:'vertical'
+    adaptive_size:True
+    FitImage:
+        radius:[dp(25), dp(25), 0, 0]
+        source:root.source
+        size_hint:(None, None)
+        size:("320dp", "320dp")
+        pos_hint:{'x':0.1}
+    MDBoxLayout:
+        size_hint_y:None
+        height:dp(72)
+        
+        MDIconButton:
+            icon:'heart-outline'
+            theme_icon_color: "Custom"
+			icon_color: 1, 0, 0, 1
+            font_size:dp(8)
+            on_release: self.icon = "heart" if self.icon == "heart-outline" else "heart-outline"
+        TwoLineAvatarIconListItem:
+            text:root.name
+            secondary_text:root.region
+            ImageLeftWidget:
+                source:root.account_avatar
+                radius:self.width/2
+            RightContainer:
+                MDIconButton:
+                    icon:'dots-vertical'
+
+        
+        
+        

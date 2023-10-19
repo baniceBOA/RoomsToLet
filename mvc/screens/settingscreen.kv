@@ -1,0 +1,41 @@
+<SettingScreen>:
+    MDBoxLayout:
+        orientation:'vertical'
+        MDTopAppBar:
+            title:'setting'
+            left_action_items:[['chevron-left', lambda x:root.chevron_back(x)]]
+            md_bg_color:'green'
+        MDScrollView:
+            MDBoxLayout:
+                orientation:'vertical'
+                adaptive_height:True
+                padding:[dp(8), dp(15), dp(8), dp(15)]
+                Header:
+                    text:'System'
+                TwoLineIconListItemWithSwitch:
+                    active:True
+                    text:'Permission Manager'
+                    secondary_text:'App has access to your storage'
+                TwoLineIconListItemWithSwitch:
+                    text:'Permission Manager'
+                    secondary_text:'App has access to your storage'
+
+                MDSeparator:
+                Header:
+                    text:'Privacy'
+                TwoLineIconListItemWithSwitch:
+                    text:'Permission Manager'
+                    secondary_text:'App has access to your storage'
+                TwoLineIconListItemWithSwitch:
+                    text:'Permission Manager'
+                    secondary_text:'App has access to your storage'
+                OnelineIconListItemWithSwitch:
+                    active:True
+                    text:'Vibrate'
+            
+    
+            
+                
+
+
+        

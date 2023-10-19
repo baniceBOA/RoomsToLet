@@ -10,6 +10,7 @@ from kivymd.uix.button import MDFillRoundFlatButton
 from kivymd.uix.behaviors import RectangularElevationBehavior
 from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.fitimage import FitImage
+from kivymd.uix.card import MDCard 
 from kivymd.uix.imagelist import MDSmartTile
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.list import OneLineIconListItem
@@ -84,23 +85,47 @@ kv = '''
 <ViewHouseImage>:
 
 <ViewHouse>:
-	radius: 24
-	box_radius: [0, 0, 24, 24]
-	lines: 2
-	source: root.image
-	pos_hint: {"center_x": .5, "center_y": .5}
+	orientation:'vertical'
+	radius:dp(25)
 	size_hint: None, None
-	size: "320dp", "320dp"
-	MDIconButton:
-		icon: "heart-outline"
-		theme_icon_color: "Custom"
-		icon_color: 1, 0, 0, 1
-		pos_hint: {"center_y": .5}
-		on_release: self.icon = "heart" if self.icon == "heart-outline" else "heart-outline"
-	TwoLineListItem:
-		text: f"[color=#ffffff][b]{root.housetype}[/b][/color]"
-		secondary_text: f"[color=#808080][b]{root.region}[/b][/color]"
-		pos_hint: {"center_y": .5}
+	size: "320dp", "500dp"
+	MDBoxLayout:
+		size_hint_y:None
+		height:dp(64)
+		pos_hint:{"center_y":1}
+		MDRelativeLayout:
+			MDIconButton:
+				icon:'arrow-left'
+				pos_hint:{"center_x":0.08, "center_y":0.5}
+			FitImage:
+				source:root.image
+				pos_hint:{"center_x":0.20, "center_y":0.5}
+				size_hint:(None, None)
+				size:(dp(60), dp(60))
+				radius:self.width/2
+			MDIconButton:
+				icon:'dots-vertical'
+				pos_hint:{"center_x":0.9, "center_y":0.5}
+		
+		FitImage:
+			source: root.image
+			pos_hint: {"center_x": .5, "center_y": .5}
+			size_hint: None, None
+			size: "320dp", "320dp"
+	
+		MDRelativeLayout:
+			size_hint_y:None
+			height:dp(72)
+			MDIconButton:
+				icon: "heart-outline"
+				theme_icon_color: "Custom"
+				icon_color: 1, 0, 0, 1
+				pos_hint:{"center_x":0.08, "center_y":0.5}
+				on_release: self.icon = "heart" if self.icon == "heart-outline" else "heart-outline"
+			TwoLineListItem:
+				text: f"[color=#ffffff][b]{root.housetype}[/b][/color]"
+				secondary_text: f"[color=#808080][b]{root.region}[/b][/color]"
+				pos_hint:{"center_x":0.2, "center_y":0.5}
 
 <ViewRooms>:
 	view:view
@@ -165,12 +190,13 @@ kv = '''
 					root_layout:root
 					refresh_callback:app.refresh
 					viewclass:'ViewHouse'
-					MDRecycleGridLayout:
-						default_size: None, dp(325)
+					MDRecycleBoxLayout:
+						default_size: None, dp(500)
 						default_size_hint: 1, None
 						adaptive_height:True
-						cols:2
-						spacing:"5sp"
+						orientation:'vertical'
+						padding:[dp(8), dp(25), dp(8), dp(25)]
+						spacing:'5sp'
 			MDScreen:
 				name:'toletapp_screen_search_view'
 				SearchView:
@@ -319,6 +345,7 @@ kv = '''
 
 '''
 Builder.load_string(kv)
+
 class OneListItem(OneLineIconListItem):
 	icon = StringProperty()
 class ClickableImage(ButtonBehavior, FitImage):
@@ -344,7 +371,7 @@ class Tab(MDBoxLayout, MDTabsBase):
 class ViewHouseImage(ButtonBehavior, AKImageLoader):
 	pass
 		
-class ViewHouse(MDSmartTile):
+class ViewHouse(MDCard):
 	image = StringProperty()
 	housetype = StringProperty()
 	region = StringProperty()
@@ -385,7 +412,18 @@ class ToLetApp(MDFloatLayout):
 	
 
 
-		
+urls = ['https://i.guim.co.uk/img/media/7d04c4cb7510a4bd9a8bec449f53425aeccee895/298_266_1150_690/master/1150.jpg?width=1200&quality=85&auto=format&fit=max&s=4ae508ecb99c15ec04610b617efb3fa7',
+						'https://images7.alphacoders.com/345/thumbbig-345553.webp',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRln-3kdi7WJ5fhB7DSmh_T_k_B5PbqJwVr6g&usqp=CAU',
+						'https://upload.wikimedia.org/wikipedia/commons/6/6c/Priyanka-chopra-gesf-2018-7565.jpg',
+						'https://images2.alphacoders.com/489/thumbbig-489212.webp',
+						'https://i.redd.it/hje1fqzt8yi41.jpg',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcbVuoDjA_X1W2ONHZ1_rKjGC0-2FuuoiTTQ&usqp=CAU',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCmpWfyLnOW5BjPvWhJRbZyzM2tmTp0BGIEA&usqp=CAU'
+						'https://www.instyle.com/thmb/yi4IXmywb9bqQ5t8PwW935X14_c=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Priyanka-Chopra-Lead-51411e8b9ded419b8839afe25f36db72.jpg',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Px4EIVER-q5mdTMHzBUeebeSeNgIXDN855peEfZ2BBtknPFidpzV4N7xzUHMZF-yis8&usqp=CAU'
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE8DCWwBTi6XeNFXyCCoUAsrOerJILSZ0xSh57_FAxMw45P3VM_XhCDEJp1NevEd76V9Q&usqp=CAU',
+						'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format']	
 
 	
 		
@@ -413,18 +451,7 @@ class MainApp(MDApp):
 			else:
 				toast('could not get permission\n try to enable manually')
 		dirs = storagepath.get_pictures_dir()
-		self.images = ['https://i.guim.co.uk/img/media/7d04c4cb7510a4bd9a8bec449f53425aeccee895/298_266_1150_690/master/1150.jpg?width=1200&quality=85&auto=format&fit=max&s=4ae508ecb99c15ec04610b617efb3fa7',
-						'https://images7.alphacoders.com/345/thumbbig-345553.webp',
-						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRln-3kdi7WJ5fhB7DSmh_T_k_B5PbqJwVr6g&usqp=CAU',
-						'https://upload.wikimedia.org/wikipedia/commons/6/6c/Priyanka-chopra-gesf-2018-7565.jpg',
-						'https://images2.alphacoders.com/489/thumbbig-489212.webp',
-						'https://i.redd.it/hje1fqzt8yi41.jpg',
-						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcbVuoDjA_X1W2ONHZ1_rKjGC0-2FuuoiTTQ&usqp=CAU',
-						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCmpWfyLnOW5BjPvWhJRbZyzM2tmTp0BGIEA&usqp=CAU'
-						'https://www.instyle.com/thmb/yi4IXmywb9bqQ5t8PwW935X14_c=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Priyanka-Chopra-Lead-51411e8b9ded419b8839afe25f36db72.jpg',
-						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Px4EIVER-q5mdTMHzBUeebeSeNgIXDN855peEfZ2BBtknPFidpzV4N7xzUHMZF-yis8&usqp=CAU'
-						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE8DCWwBTi6XeNFXyCCoUAsrOerJILSZ0xSh57_FAxMw45P3VM_XhCDEJp1NevEd76V9Q&usqp=CAU',
-						'https://assets-eu-01.kc-usercontent.com/3b3d460e-c5ae-0195-6b86-3ac7fb9d52db/819061b6-7d77-4e3b-96af-1075fb2de5cb/Bugatti%20Chiron%20Super%20Sport%20300%2B.jpeg?width=800&fm=jpg&auto=format']
+		self.images = []
 		self.toletapp = self.root.ids.my_views.ids.refresh_layout
 		data = [{'image':f'{img}', 'housetype':'bugalow','on_release':lambda x=f'{img}': self.change_screen(x)} for img in self.images]
 		self.toletapp.data = data
@@ -444,7 +471,62 @@ class MainApp(MDApp):
 		#r = requests.get('http://127.0.0.1:5000/get_images')
 		#result = r.json()
 		url = self.url + '/get_images'
-		self.images_list = []
+		self.images_list = [
+			"http://localhost:5000//get_file/IMG-20220620-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220620-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220623-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220623-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220623-WA0001.jpg",
+			"http://localhost:5000//get_file/IMG-20220623-WA0001_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220623-WA0002.jpg",
+			"http://localhost:5000//get_file/IMG-20220623-WA0002_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220624-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220624-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220624-WA0002.jpg",
+			"http://localhost:5000//get_file/IMG-20220624-WA0002_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220625-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220625-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220625-WA0001.jpg",
+			"http://localhost:5000//get_file/IMG-20220625-WA0001_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220626-WA0003.jpg",
+			"http://localhost:5000//get_file/IMG-20220626-WA0003_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0001.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0001_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0002.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0002_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0003.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0003_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0004.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0004_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0005.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0005_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0006.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0006_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220627-WA0008.jpg",
+			"http://localhost:5000//get_file/IMG-20220627-WA0008_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220628-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220628-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220629-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220629-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220630-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220630-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220630-WA0001.jpg",
+			"http://localhost:5000//get_file/IMG-20220630-WA0001_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220701-WA0000.jpg",
+			"http://localhost:5000//get_file/IMG-20220701-WA0000_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220701-WA0001.jpg",
+			"http://localhost:5000//get_file/IMG-20220701-WA0001_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220312-WA0002.jpg",
+			"http://localhost:5000//get_file/IMG-20220312-WA0002_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220402-WA0001.jpg",
+			"http://localhost:5000//get_file/IMG-20220402-WA0001_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220402-WA0002.jpg",
+			"http://localhost:5000//get_file/IMG-20220402-WA0002_remove_bg.png",
+			"http://localhost:5000//get_file/IMG-20220404-WA0009.jpg",
+			"http://localhost:5000//get_file/IMG-20220404-WA0009_remove_bg.png",
+		]
 		UrlRequest(url, on_success=self.success_fetch, on_error=self.error_fetch, on_failure=self.failure_fetch)
 		#self.root.ids.my_views.ids.refresh_layout.data = []
 		self.root.ids.my_views.ids.refresh_layout.viewclass = 'ViewHouse'
@@ -456,6 +538,7 @@ class MainApp(MDApp):
 		print(result.keys())
 		
 		for img in result['images']:
+			print(f'{self.url}/get_file/{img}')
 			self.images_list.append(f'{self.url}/get_file/{img}')
 			
 		self.root.ids.my_views.ids.refresh_layout.data = []
